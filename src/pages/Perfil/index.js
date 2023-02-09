@@ -115,7 +115,7 @@ export default function Perfil(){
                                 <TiWarning size='2.5em' color='rgb(181,22,22)'/>
                             </div>
                             <div className='enterprise-text-info-expired'>
-                                <p>16/08/2022 - <strong>Bolsonaro faz algo ruim como sempre</strong> - Noticia de alto nível foi postada como baixo nivel.</p>
+                                <p>15/01/2022 - <strong>Lula financia cuba</strong> - Noticia falsa.</p>
                             </div>
                         </div>
                         <hr color='#e9e9e9'/>

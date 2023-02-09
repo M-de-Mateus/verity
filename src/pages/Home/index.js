@@ -17,7 +17,6 @@ import feedNoticeImage from '../../assets/notice-image-feed.png';
 export default function Home(){
     return(
         <div className='content'>
-            <title>Home</title>
             <div className='user'>
                 <div>
                     <img src={userImage} alt='Imagem do usuário'/>
@@ -67,6 +66,14 @@ export default function Home(){
                         <select>
                             <option className='option'>G1</option>
                         </select>
+                    </div>
+                </div>
+                <div className='post-creator'>
+                    <div className='creator-logo-area'>
+                        <img src={ userImage } alt='user'/>
+                    </div>
+                    <div className='creator-input-area'>
+                        <button><input type='text' placeholder='O que vamos noticiar hoje?' disabled='True'/></button>
                     </div>
                 </div>
                 <div className='feed-posts'>

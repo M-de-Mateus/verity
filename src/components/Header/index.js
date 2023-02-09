@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import './header.css';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdClose } from 'react-icons/md'
+import { IoLogOutOutline } from 'react-icons/io5';
 
 export default function Header(){
     const [showSidebar, setShowSidebar] = useState(false);
@@ -28,6 +29,7 @@ export default function Header(){
             <NavLink to={'/'}  className={path === '/' ? 'active' : 'link'}>Home</NavLink>
             <NavLink to={'/perfil'} className={path === '/perfil' ? 'active' : 'link'}>Perfil</NavLink>
             <NavLink to={'/learn'} className={path === '/learn' ? 'active' : 'link'}>Learn</NavLink>
+            <button className='btn-logout'><IoLogOutOutline size='1.5em'/>Sair</button>
         </div>
       </header>
     )

@@ -66,6 +66,20 @@ img{
   cursor: pointer;
 }
 
+.btn-logout{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .2em;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  background-color: transparent;
+  color: var(--color-green);
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
 @media screen and (max-width: 768px){
   .btn-header{
     display: block;
