@@ -98,6 +98,28 @@ export default function Perfil(){
                             </div>
                         </div>
                     </div>
+                    <div className='user-information'>
+                        <h3>Histórico de Strikes</h3>
+                        <br/>
+                        <div className='enterprise-list-info'>
+                            <div className='enterprise-info-icon'>
+                                <TiWarning size='2.5em' color='rgb(181,22,22)'/>
+                            </div>
+                            <div className='enterprise-text-info'>
+                                <p>16/08/2022 - <strong>Bolsonaro faz algo ruim como sempre</strong> - Noticia de alto nível foi postada como baixo nivel.</p>
+                            </div>
+                        </div>
+                        <hr color='#e9e9e9'/>
+                        <div className='enterprise-list-info'>
+                            <div className='enterprise-info-icon'>
+                                <TiWarning size='2.5em' color='rgb(181,22,22)'/>
+                            </div>
+                            <div className='enterprise-text-info-expired'>
+                                <p>16/08/2022 - <strong>Bolsonaro faz algo ruim como sempre</strong> - Noticia de alto nível foi postada como baixo nivel.</p>
+                            </div>
+                        </div>
+                        <hr color='#e9e9e9'/>
+                    </div>
                 </div>
                 <div className='user-profile-area-column'>
                     <div className='feed-posts'>
