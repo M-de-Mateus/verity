@@ -179,3 +179,51 @@
 .more-user-information-details div{
     margin-top: 5px;
 }
+
+.user-profile-area-column{
+    display: flex;
+    flex-direction: column;
+}
+
+.range-style{
+    -webkit-appearance: none;
+    background: rgb(181,22,22);
+    background: linear-gradient(90deg, rgba(181,22,22,1) 50%, rgba(255,199,0,1) 60%, rgba(255,199,0,1) 70%, rgba(48,112,111,1) 90%);
+    outline: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;   
+}
+
+.range-style::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 0; 
+    height: 0; 
+    border-left: .5em solid transparent;
+    border-right: .5em solid transparent;
+    border-top: .5em solid #000;
+    position: relative;
+    margin-bottom: 1.8em;
+}
+
+.enterprise-more-info{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.enterprise-list-info{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .6em;
+    padding: 5px 0;
+}
+
+.enterprise-text-info{
+    font-size: .9em;
+}
+
+.user-information:last-child{
+    margin-bottom: 20px;
+}

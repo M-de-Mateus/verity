@@ -8,6 +8,19 @@
   outline: 0;
 }
 
+body::-webkit-scrollbar {
+  width: .4em;               /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background: #E9E9E9;        /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgba(48, 112, 111, .7);   /* color of the scroll thumb */
+  border-radius: 1px;       /* roundness of the scroll thumb */
+}
+
 html, body, #root{
   height: 100%;
   background-color: #E9E9E9;
