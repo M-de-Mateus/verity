@@ -1,0 +1,95 @@
+:root{
+  --color-white: #fff;
+  --color-black: #000;
+  --color-green: #30706f;
+  --color-grey: #9B9797;
+}
+
+img{
+  width: 45px;
+}
+
+.logo{
+  font-family: Libre Baskerville;
+  font-size: 2em;
+  font-weight: 400;
+  line-height: 43px;
+  letter-spacing: 0em;
+  text-align: center;
+  background-color: var(--color-green);
+  box-sizing: border-box;
+  height: 100%;
+  width: 20%;
+  border-radius: 0 10px 10px 0 ;
+  color: var(--color-white)
+}
+
+.header, .navigation{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.header{
+  background-color: var(--color-white);
+  height: 3.5em;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.navigation{
+  gap: 3em;
+  padding-right: 10%;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--color-green);
+  font-weight: bold;
+  transition: 1s;
+}
+
+.active{
+  background-color: var(--color-green);
+  color: var(--color-white);
+  font-weight: bold;
+  transition: 1s;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.btn-header{
+  display: none;
+  background-color: transparent;
+  border: none;
+  color: var(--color-green);
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px){
+  .btn-header{
+    display: block;
+    padding-left: 10%;
+  }
+  .navigation{
+    position: absolute;
+    flex-direction: column;
+    top: 0;
+    background-color: var(--color-white);
+    height: 100%;
+    width: 35vw;
+    padding: 1em;
+    animation-duration: 1s;
+    margin-left: -100vw;
+    padding-left: 10%;
+  }
+
+  .logo{
+    border-radius: 10px 0 0 10px;
+  }
+}
+
+@keyframes showSidebar {
+  from {margin-left: -100vw;}
+  to {margin-left: -10vw;}
+}
