@@ -96,6 +96,7 @@ img{
     animation-duration: 1s;
     margin-left: -100vw;
     padding-left: 10%;
+    z-index: 99;
   }
 
   .logo{

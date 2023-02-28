@@ -11,9 +11,9 @@ export default function Header(){
 
     function toggleSidebar(){
       if(!showSidebar){
-        setShowSidebar(true)
+        setShowSidebar(true);
       }else{
-        setShowSidebar(false)
+        setShowSidebar(false);
       }
     }
 

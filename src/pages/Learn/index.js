@@ -13,7 +13,7 @@ export default function Learn(){
         <div className='content-learn'>
             <div className='content-banner'>
                 <div className='content-banner-logo'>
-                    <GiGraduateCap size='18em' color='#30706f'/>
+                    <GiGraduateCap color='#30706f'/>
                 </div>
                 <div className='content-banner-text'>
                     <h1>Bem-vindos ao <strong id='text-font-modified'>Verity Learn</strong>!</h1>

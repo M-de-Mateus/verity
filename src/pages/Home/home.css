@@ -12,10 +12,9 @@
     flex-direction: row;
     justify-content: space-between;
     align-items:flex-start;
-    margin-top: 20px;
+    margin: 20px auto;
     padding: 10px 10px;
     gap: 2em;
-    margin-left: 10px;
 }
 
 .user, .notices{
@@ -62,14 +61,14 @@
 
 .user h4{
     padding-top: 5px;
-    font-size: 1.1vw;
+    font-size: 1.1em;
     margin: 0 auto;
 }
 
 .user h6{
     padding-top: .5em;
     color: var(--color-lightgrey);
-    font-size: .7vw;
+    font-size: .7em;
     margin: 0 auto;
 }
 
@@ -79,7 +78,7 @@
 }
 
 .user-options span{
-    font-size: .9vw;
+    font-size: .9em;
     font-weight: bold;
     margin-bottom: 10px;
 }
@@ -91,13 +90,14 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    margin: 0 auto;
     color: var(--color-white);
     gap: .4em;
     box-sizing: border-box;
     width: fit-content;
     height: fit-content;
     border-radius: 10px;
-    padding-top: 0;
+    padding: 0 5px;
     align-items: center;
 }
 
@@ -119,6 +119,15 @@
     color: var(--color-white);
     width: 10em;
     font-size: .7em;
+}
+
+.filter div.button-filter{
+    display: none;
+}
+
+.icon-filter-button{
+    background-color: transparent;
+    border: none;
 }
 
 .option{
@@ -161,8 +170,8 @@
 }
 
 .feed-post-user-profile img{
-    width: 3vw;
-    height: 3vw;
+    width: 3em;
+    height: 3em;
 }
 
 .feed-post-user-name{
@@ -203,7 +212,7 @@
     padding: 0px 15px;
     padding-bottom: 10px;
     width: 100%;
-    font-size: .9em;
+    font-size: 1em;
 }
 
 .feed-post-text p{
@@ -241,7 +250,7 @@
 }
 
 .media-notice-title{
-    font-size: .8vw;
+    font-size: .9em;
     padding: 5px 10px;
     margin-right: 5px ;
     display: block;
@@ -346,7 +355,7 @@
 
 .notices h4{
     padding: 5px 0;
-    font-size: 1vw;
+    font-size: 1em;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -381,7 +390,7 @@
 }
 
 .notice-title{
-    font-size: .8vw;
+    font-size: .7em;
     padding: 5px 5px;
     margin-right: 5px ;
     display: block;
@@ -403,8 +412,8 @@
 }
 
 .creator-logo-area img{
-    height: 3vw;
-    width: 3vw;
+    height: 3em;
+    width: 3em;
 }
 
 .creator-input-area{
@@ -426,4 +435,81 @@
     padding: 10px;
     border-radius: 15px;
     cursor: pointer;
+}
+
+
+button.icon-filter-button-search{
+    background-color: transparent;
+    display: flex;
+    align-items: flex-end;
+    padding: 5px;
+    border: none;
+}
+
+button.icon-filter-button-search svg{
+    margin-bottom: -5px;    
+}
+
+@media  screen and (max-width: 1342px) {
+    .filter{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        max-width: 500px;
+        width: 100%;
+    }
+    
+    .filter div{
+        display: none;
+    }
+
+    button.icon-filter-button-search{
+        display: none;
+    }
+
+    .filter div.button-filter{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: .9em;
+        margin-right: 45%;
+    }
+
+    .filter div.button-filter button.icon-filter-button{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-weight: bold;
+        gap: .1em;
+        font-size: 1em;
+    }
+
+    .filter div.button-filter span{
+        color: var(--color-white);
+        text-align: center;
+        width: max-content;
+        padding: 5px;
+    }
+
+}
+
+@media  screen and (max-width: 890px) {
+    .notice-title{
+        font-size: .6em;
+    }
+}
+
+@media screen and (max-width: 800px){
+    .content{
+        justify-content: center;
+    }
+
+    .notices{
+        display: none;
+    }
+
+    .user{
+        display: none;
+    }
 }

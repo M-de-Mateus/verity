@@ -26,6 +26,11 @@
     padding: 10px 10px;
 }
 
+.content-banner-logo svg{
+    width: 15vw;
+    height: 15vw;
+}
+
 .content-banner-text{
     display: flex;
     flex-direction: column;
@@ -78,6 +83,7 @@
 .learn-articles-infos{
     width: 50%;
     padding: 10px 10px;
+    font-size: .9em;
 }
 
 .learn-articles-infos h3{
@@ -92,4 +98,18 @@
 .learn-articles-infos ul li{
     margin-bottom: .6em;
     font-size: .9em;
+}
+
+@media  screen and (max-width: 710px) {
+    .content-banner-logo svg{
+        display: none;
+    }
+
+    .learn-articles-infos{
+        font-size: .8em;
+    }
+
+    .learn-articles-infos h3{
+        margin-bottom: 2em
+    }
 }

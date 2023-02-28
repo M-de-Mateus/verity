@@ -7,12 +7,15 @@ import { TiWarning } from 'react-icons/ti';
 import { AiFillLike} from 'react-icons/ai';
 import { MdModeComment } from 'react-icons/md';
 import { MdOutlineModeComment } from 'react-icons/md';
+import { FiFilter } from 'react-icons/fi';
+import { BiSearchAlt } from 'react-icons/bi';
 import userImage from '../../assets/userImage.png';
 import noticeImage from '../../assets/imagemNoticia.png';
 import noticeImage2 from '../../assets/imagemNoticia2.png';
 import noticeImage3 from '../../assets/imagemNoticia3.png';
 import userProfileFeed from '../../assets/user-profile-image.png';
 import feedNoticeImage from '../../assets/notice-image-feed.png';
+
 
 export default function Home(){
     return(
@@ -31,6 +34,12 @@ export default function Home(){
             </div>
             <div className='feed'>
                 <div className='filter'>
+                    <div className='button-filter'>
+                        <button className='icon-filter-button'>
+                            <FiFilter size='1.5em' color='#fff'/>
+                            <span>Clique para abrir os filtros</span>
+                        </button>
+                    </div>
                     <div>
                         <label>Ordernado por:</label>
                         <select>
@@ -67,6 +76,9 @@ export default function Home(){
                             <option className='option'>G1</option>
                         </select>
                     </div>
+                    <button className='icon-filter-button-search'>
+                        <BiSearchAlt size='1.8em' color='#fff'/>
+                    </button>
                 </div>
                 <div className='post-creator'>
                     <div className='creator-logo-area'>
@@ -179,9 +191,6 @@ export default function Home(){
                     </div>
                 </div>
             </div>
-            
-            
-
         </div>
     )
 }
