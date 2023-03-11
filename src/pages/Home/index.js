@@ -1,4 +1,5 @@
 import './home.css';
+import Modal from '../../components/Modalpost';
 import Header from '../../components/Header';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { FaRegUserCircle } from 'react-icons/fa';
@@ -195,6 +196,7 @@ export default function Home(){
                     </div>
                 </div>
             </div>
+            <Modal/>
         </div>
     )
 }
