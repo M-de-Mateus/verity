@@ -33,17 +33,17 @@ export default function Modalpost(){
                         </div>
                         <div className='modal-post-area-form-ratio'>
                             <ul class="ratio-options">
-                                <li class="option low">
+                                <li class="option-modal low">
                                     <input name="levels" type="radio" id="low"/>
                                     <label for="low">Baixo</label>
                                 </li>
 
-                                <li class="option medium">
+                                <li class="option-modal medium">
                                     <input name="levels" type="radio" id="medium"/>
                                     <label for="medium">Médio</label>
                                 </li>
 
-                                <li class="option high">
+                                <li class="option-modal high">
                                     <input name="levels" type="radio" id="high"/>
                                     <label for="high">Alto</label>
                                 </li>
