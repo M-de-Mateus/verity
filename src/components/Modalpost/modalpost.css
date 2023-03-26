@@ -11,7 +11,7 @@
 .modal-post .modal-post-container{
     position: fixed;
     max-width: 600px;
-    top: 15%;
+    top: 8%;
     left: 0;
     right: 0;
     margin: 0 auto;
@@ -108,6 +108,21 @@
     margin-right: 10px;
 }
 
+.modal-post-area-form-ratio{
+    margin-top: 1em;
+    display: inline-flex;
+    background-color: #e9e9e9;
+    padding: .8em;
+    border-radius: 10px;
+    font-size: .9em;
+    align-items: center;
+    width: 100%;
+}
+
+.modal-post-area-form-ratio span{
+    margin-right: 10px;
+}
+
 .ratio-options {
     list-style: none;
     margin: 0;
@@ -179,4 +194,67 @@
     position: absolute;
     right: -5px;
     width: 16px;
+}
+
+.modal-post-area-form-anexo{
+    margin-top: 1em;
+    display: inline-flex;
+    background-color: #e9e9e9;
+    padding: .8em;
+    border-radius: 10px;
+    font-size: .9em;
+    align-items: center;
+    width: 100%;
+}
+
+.modal-post-area-form-anexo button{
+    border: none;
+    background-color: transparent;
+}
+
+.modal-post-area-form-anexo span{
+    margin-right: 10px;
+}
+
+.modal-post-area-form-filters{
+    margin-top: 1em;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: .8em;
+    border-radius: 10px;
+    font-size: .9em;
+    align-items: center;
+    width: 100%;
+}
+
+.modal-post-area-form-filters label{
+    font-weight: bold;
+    font-size: 1em;
+    margin-right: 3px;
+}
+
+.modal-post-area-form-filters select{
+    border: 1px solid #000;
+    background-color: #fff;
+    text-align: center;
+    color: #000;
+    width: 10em;
+    font-size: .9em;
+}
+
+.option{
+    font-size: .9em;
+}
+
+.modal-post-publi{
+    border: none;
+    background-color: var(--color-green);
+    color: var(--color-white);
+    padding: 7px 0;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.5em;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
 }

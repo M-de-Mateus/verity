@@ -3,6 +3,7 @@ import userProfile from '../../assets/user-profile-image.png';
 import { GrFormClose } from 'react-icons/gr';
 import { MdVideoLibrary } from 'react-icons/md';
 import { MdImage } from 'react-icons/md';
+import { FiPaperclip } from 'react-icons/fi';
 
 export default function Modalpost(){
     return(
@@ -32,6 +33,7 @@ export default function Modalpost(){
                             <button><MdImage color='#30706F' size={'1.3em'}/></button>
                         </div>
                         <div className='modal-post-area-form-ratio'>
+                            <span>Nivel da noticia</span>
                             <ul class="ratio-options">
                                 <li class="option-modal low">
                                     <input name="levels" type="radio" id="low"/>
@@ -48,6 +50,33 @@ export default function Modalpost(){
                                     <label for="high">Alto</label>
                                 </li>
                             </ul>
+                        </div>
+                        <div className='modal-post-area-form-anexo'>
+                                <span>Anexe arquivos que comprovem sua noticia</span>
+                                <button><FiPaperclip color='#0395FF' size={'1.3em'}/></button>
+                        </div>
+                        <div className='modal-post-area-form-filters'>
+                            <div>
+                                <label>Tópico: </label>
+                                <select>
+                                    <option className='option'>---</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Estado: </label>
+                                <select>
+                                    <option className='option'>---</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Cidade: </label>
+                                <select>
+                                    <option className='option'>---</option>
+                                </select>
+                            </div>                    
+                        </div>
+                        <div className='modal-post-area-form-filters'>
+                            <button className='modal-post-publi'>Publicar</button>
                         </div>
                     </form>
                 </div>
