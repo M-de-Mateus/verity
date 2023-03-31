@@ -5,7 +5,7 @@ import { MdVideoLibrary } from 'react-icons/md';
 import { MdImage } from 'react-icons/md';
 import { FiPaperclip } from 'react-icons/fi';
 
-export default function Modalpost(){
+export default function Modalpost({close}){
     return(
         <div className='modal-post'>
             <div className='modal-post-container'>
@@ -14,7 +14,7 @@ export default function Modalpost(){
                         <h2>Criar publicação</h2>
                     </div>
                     <div className='modal-post-container-close'>
-                        <button>
+                        <button onClick={ close }>
                             <GrFormClose size={'2em'}/>
                         </button>   
                     </div>

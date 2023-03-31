@@ -1,6 +1,7 @@
 import './home.css';
 import Modal from '../../components/Modalpost';
 import Header from '../../components/Header';
+import { useState } from 'react';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { GoVerified } from 'react-icons/go';
@@ -20,6 +21,13 @@ import feedNoticeImage from '../../assets/notice-image-feed.png';
 
 
 export default function Home(){
+    const [modalPost, setModalPost] = useState(false);
+
+    function openModal(){
+      setModalPost(!modalPost)
+      console.log(modalPost)
+    }
+
     return(
         <div>
             <Header/>
@@ -89,7 +97,7 @@ export default function Home(){
                             <img src={ userImage } alt='user'/>
                         </div>
                         <div className='creator-input-area'>
-                            <button><input type='text' placeholder='O que vamos noticiar hoje?' disabled='True'/></button>
+                            <button onClick={openModal}><input type='text' placeholder='O que vamos noticiar hoje?' disabled='True'/></button>
                         </div>
                     </div>
                     <div className='feed-posts'>
@@ -196,7 +204,11 @@ export default function Home(){
                     </div>
                 </div>
             </div>
-           <Modal/>
+            {modalPost && (
+                <Modal
+                    close={openModal}
+                />
+            )}
         </div>
     )
 }
