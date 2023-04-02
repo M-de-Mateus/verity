@@ -1,5 +1,6 @@
 import './home.css';
 import Modal from '../../components/Modalpost';
+import Modalfilters from '../../components/Modalfilters';
 import Header from '../../components/Header';
 import { useState } from 'react';
 import { IoSettingsOutline } from 'react-icons/io5';
@@ -22,10 +23,14 @@ import feedNoticeImage from '../../assets/notice-image-feed.png';
 
 export default function Home(){
     const [modalPost, setModalPost] = useState(false);
+    const [modalFilter, setModalFilter] = useState(false);
 
     function openModal(){
       setModalPost(!modalPost)
-      console.log(modalPost)
+    }
+
+    function openFilterModal(){
+        setModalFilter(!modalFilter)
     }
 
     return(
@@ -44,10 +49,16 @@ export default function Home(){
                         <span><IoSettingsOutline size='12px'/> Configurações</span>
                     </div>
                 </div>
+                {modalFilter && (
+                    <Modalfilters
+                        close={openFilterModal}
+                    />
+                )}
+                
                 <div className='feed'>
                     <div className='filter'>
                         <div className='button-filter'>
-                            <button className='icon-filter-button'>
+                            <button className='icon-filter-button' onClick={openFilterModal}>
                                 <FiFilter size='1.5em' color='#fff'/>
                                 <span>Clique para abrir os filtros</span>
                             </button>
