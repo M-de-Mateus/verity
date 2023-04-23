@@ -1,23 +1,28 @@
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
 import Home from '../pages/Home';
 import Perfil from '../pages/Perfil';
 import Learn from '../pages/Learn';
-import Singin from '../pages/Singin';
-import LoginOpt from '../pages/LoginOpt';
 import Singincnpj from '../pages/Singincnpj';
+import Singincpf from '../pages/Singincpf';
+import Singupcnpj from '../pages/SingupCNPJ';
+import Singupcpf from '../pages/SingupCPF';
+import SingupOpt from '../pages/SingupOpt';
+import SinginOpt from '../pages/SinginOpt';
+
 
 function RoutesApp(){
     return(
-        <BrowserRouter>
             <Routes>
-                <Route path='/' element={ <Home/> } />
+                <Route path='/' element={ <SinginOpt/> } />
+                <Route path='/home' element={ <Home/> } />
                 <Route path='/perfil' element={ <Perfil/> } />
                 <Route path='/learn' element={ <Learn/> } />
-                <Route path='/loginopt' element={ <LoginOpt/> } />
-                <Route path='/singin' element={ <Singin/> } />
+                <Route path='/singupopt' element={ <SingupOpt/> } />
+                <Route path='/singincpf' element={ <Singincpf/> } />
                 <Route path='/singincnpj' element={ <Singincnpj/> } />
+                <Route path='/singupcnpj' element={ <Singupcnpj/> } />
+                <Route path='/singupcpf' element={ <Singupcpf/> } />
             </Routes>
-        </BrowserRouter>
     )
 }
 

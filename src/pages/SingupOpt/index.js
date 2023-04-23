@@ -12,8 +12,8 @@ export default function Singin(){
                 <div className="opt-area">
                     <div className='opt-container'>
                         <div className='opt-buttons'>
-                            <Link to='/singin'><button type='submit'>Pessoa Fisica</button></Link>
-                            <Link to='/singincnpj'><button type='submit'>Pessoa Juridica</button></Link>
+                            <Link to='/singupcpf'><button type='submit'>Pessoa Fisica</button></Link>
+                            <Link to='/singupcnpj'><button type='submit'>Pessoa Juridica</button></Link>
                         </div>
                     </div>
                 </div>
