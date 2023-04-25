@@ -1,17 +1,34 @@
-import { useState, createContext } from 'react';
+import { useState, createContext, useEffect } from 'react';
 import { auth, db } from '../services/firebaseconnection';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { doc, getDoc, setDoc} from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 
 export const AuthContext = createContext({});
 
 function AuthProvider( {children}){
-    const [user, setUser] = useState(null);
-    const [loadingAuth, setLoadingAuth] = useState(false);
+    const [ user, setUser ] = useState(null);
+    const [ loadingAuth, setLoadingAuth ] = useState(false);
+    const [ loading, setLoading] = useState(true);
 
     const navigate = useNavigate('');
+
+    useEffect(()=>{
+        async function loadUser(){
+            const storageUser = localStorage.getItem('@userData');
+
+            if(storageUser){
+                setUser(JSON.parse(storageUser))
+                setLoading(false);
+            }
+
+            setLoading(false);
+        }
+
+        loadUser();
+    }, [])
 
     function getData(){
         var data = new Date();
@@ -37,7 +54,7 @@ function AuthProvider( {children}){
                 email: value.user.email,
                 biografia: docSnap.data().biografia,
                 CNPJ: docSnap.data().CNPJ,
-                DataCadastro: getData(),
+                DataCadastro: docSnap.data().DataCadastro,
                 Rua: docSnap.data().Rua,
                 Numero: docSnap.data().Numero,
                 Bairro: docSnap.data().Bairro,
@@ -56,13 +73,32 @@ function AuthProvider( {children}){
 
             setUser(data);
             storageUser(data);
-            console.log(data)
             setLoadingAuth(false);
             navigate('/home');
+            toast.success('Bem-vindo(a) de volta!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress:"",
+                theme: "colored",
+                });
         })
         .catch((error) => {
             console.log(error);
             setLoadingAuth(false);
+            toast.error('Algo deu errado, tente novamente!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: "",
+                theme: "colored",
+            });
         })
     }
 
@@ -124,17 +160,161 @@ function AuthProvider( {children}){
                 storageUser(data);
                 setLoadingAuth(false);
                 navigate('/home');
-            })
+                toast.success('Bem-vindo(a)!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress:"",
+                    theme: "colored",
+                    });
+                })
         })
         .catch((error) => {
             console.log(error);
             setLoadingAuth(false);
+            toast.error('Algo deu errado, tente novamente!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: "",
+                theme: "colored",
+            });
+        })
+    }
+
+    async function singInCPF(email, password){
+        setLoadingAuth(true);
+
+        await signInWithEmailAndPassword(auth, email, password)
+        .then(async (value) => {
+            let uid = value.user.uid;
+
+            const docRef = doc(db, "usersCPF", uid);
+            const docSnap = await getDoc(docRef)
+
+            let data = {
+                uid: uid,
+                name: docSnap.data().NomeUsuario,
+                email: value.user.email,
+                biografia: docSnap.data().biografia,
+                CPF: docSnap.data().CPF,
+                DataCadastro: docSnap.data().DataCadastro,
+                FotoCapa: docSnap.data().FotoCapa,
+                FotoPerfil: docSnap.data().FotoPerfil,
+                StatusVerificação: docSnap.data().StatusVerificação
+            }
+
+            setUser(data);
+            storageUser(data);
+            console.log(data)
+            setLoadingAuth(false);
+            navigate('/home');
+            toast.success('Bem-vindo(a) de volta!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress:"",
+                theme: "colored",
+                });
+            })     
+        .catch((error) => {
+            console.log(error);
+            setLoadingAuth(false);
+            toast.error('Algo deu errado, tente novamente!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: "",
+                theme: "colored",
+            });
+        })
+    }
+
+    async function singUpCPF(email, password, name, cpf ){
+        setLoadingAuth(true);
+
+        await createUserWithEmailAndPassword(auth, email, password)
+        .then(async (value) => {
+            let uid = value.user.uid
+
+            await setDoc(doc(db, "usersCPF", uid ), {
+                biografia: "",
+                CPF: cpf,
+                DataCadastro: getData(),
+                FotoCapa: "",
+                FotoPerfil: "",
+                NomeUsuario: name,
+                StatusVerificação:"Não verificado",
+                Email: email
+            })
+            .then(() => {
+                let data = {
+                    uid: uid,
+                    biografia: "",
+                    CPF: cpf,
+                    DataCadastro: getData(),
+                    FotoCapa: "",
+                    FotoPerfil: "",
+                    NomeUsuario: name,
+                    StatusVerificação:"Não verificado",
+                    Email: value.user.email
+                };
+                
+                setUser(data);
+                storageUser(data);
+                setLoadingAuth(false);
+                navigate('/home');
+                toast.success('Bem-vindo(a)!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress:"",
+                    theme: "colored",
+                    });
+                })
+        })
+        .catch((error) => {
+            console.log(error);
+            setLoadingAuth(false);
+            toast.error('Algo deu errado, tente novamente!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: "",
+                theme: "colored",
+            });
         })
     }
 
     function storageUser(data){
         localStorage.setItem('@userData', JSON.stringify(data))
     }
+
+    async function logout(){
+        await signOut(auth);
+        localStorage.removeItem('@userData');
+        setUser(null);
+    }
+
+
 
     return(
         <AuthContext.Provider
@@ -143,7 +323,11 @@ function AuthProvider( {children}){
                 user,
                 singInCNPJ,
                 singUpCNPJ,
-                loadingAuth  
+                singInCPF,
+                singUpCPF,
+                logout,
+                loadingAuth,
+                loading  
             }}
         >
             {children}

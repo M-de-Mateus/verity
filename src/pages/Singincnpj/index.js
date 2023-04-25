@@ -32,7 +32,7 @@ export default function Singin(){
                             <h1>Verity</h1>
                         </div>
                         <div className='singin-form'>
-                            <label>LOGIN</label>
+                            <label>LOGIN - CNPJ</label>
                             <form onSubmit={handleSignIn}>
                                 <input className='user-info-singins' required type='email' placeholder="E-mail" name='e-mail'
                                 value={email} onChange={(e) => setEmail(e.target.value)}/>
@@ -51,8 +51,7 @@ export default function Singin(){
                                     <button type='submit'>
                                         {loadingAuth ? "CARREGANDO..." : "ENTRAR" }
                                     </button>
-
-                                    <span>Novo aqui? <Link to='/singupopt'> Crie uma conta!</Link></span>
+                                    <span>Novo aqui? <Link to='/singupcnpj'> Crie uma conta!</Link></span>
                                 </div>
                             </form>
                         </div>

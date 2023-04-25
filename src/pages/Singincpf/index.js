@@ -10,13 +10,13 @@ export default function Singin(){
     const [email, setEmail] = useState('');
     const [ password, setPassword] = useState('');
 
-    const { singInCNPJ, loadingAuth  } = useContext(AuthContext);
+    const { singInCPF, loadingAuth  } = useContext(AuthContext);
 
     async function handleSignIn(e){
         e.preventDefault();
 
         if( email !== '' & password !== ''){
-            await singInCNPJ(email, password);
+            await singInCPF(email, password);
         }
     }
 
@@ -32,7 +32,7 @@ export default function Singin(){
                             <h1>Verity</h1>
                         </div>
                         <div className='singin-form'>
-                            <label>LOGIN</label>
+                            <label>LOGIN - CPF</label>
                             <form onSubmit={handleSignIn}>
                                 <input className='user-info-singins' required type='email' placeholder="E-mail" name='e-mail'
                                 value={email} onChange={(e) => setEmail(e.target.value)}/>
@@ -52,7 +52,7 @@ export default function Singin(){
                                         {loadingAuth ? "CARREGANDO..." : "ENTRAR" }
                                     </button>
 
-                                    <span>Novo aqui? <Link to='/singupopt'> Crie uma conta!</Link></span>
+                                    <span>Novo aqui? <Link to='/singupcpf'> Crie uma conta!</Link></span>
                                 </div>
                             </form>
                         </div>
