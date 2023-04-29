@@ -50,9 +50,9 @@ function AuthProvider( {children}){
 
             let data = {
                 uid: uid,
-                name: docSnap.data().NomeUsuario,
-                email: value.user.email,
-                biografia: docSnap.data().biografia,
+                NomeUsuario: docSnap.data().NomeUsuario,
+                Email: value.user.email,
+                Biografia: docSnap.data().Biografia,
                 CNPJ: docSnap.data().CNPJ,
                 DataCadastro: docSnap.data().DataCadastro,
                 Rua: docSnap.data().Rua,
@@ -69,6 +69,7 @@ function AuthProvider( {children}){
                 StatusVerificação: docSnap.data().StatusVerificação,
                 Telefone: docSnap.data().Telefone,
                 Tipo: docSnap.data().Tipo,
+                Pessoa: docSnap.data().Pessoa
             }
 
             setUser(data);
@@ -111,7 +112,7 @@ function AuthProvider( {children}){
             let uid = value.user.uid
 
             await setDoc(doc(db, "usersCNPJ", uid ), {
-                biografia: "",
+                Biografia: "",
                 CNPJ: cnpj,
                 DataCadastro: getData(),
                 Rua: rua,
@@ -120,8 +121,8 @@ function AuthProvider( {children}){
                 Cidade: cidade,
                 CEP: cep,
                 Estado: estado,
-                FotoCapa: "",
-                FotoPerfil: "",
+                FotoCapa: null,
+                FotoPerfil: null,
                 NomeFantasia: nomeFantasia,
                 NomeUsuario: name,
                 Pais: pais,
@@ -129,14 +130,15 @@ function AuthProvider( {children}){
                 StatusVerificação:"Não verificada",
                 Telefone: telefone,
                 Tipo: tipo,
-                Email: email
+                Email: email,
+                Pessoa: "Juridica"
             })
             .then(() => {
                 let data = {
                     uid: uid,
-                    name: name,
-                    email: value.user.email,
-                    biografia: "",
+                    NomeUsuario: name,
+                    Email: value.user.email,
+                    Biografia: null,
                     CNPJ: cnpj,
                     DataCadastro: getData(),
                     Rua: rua,
@@ -154,6 +156,7 @@ function AuthProvider( {children}){
                     StatusVerificação:"Não verificada",
                     Telefone: telefone,
                     Tipo: tipo,
+                    Pessoa: "Juridica"
                 };
                 
                 setUser(data);
@@ -200,14 +203,15 @@ function AuthProvider( {children}){
 
             let data = {
                 uid: uid,
-                name: docSnap.data().NomeUsuario,
-                email: value.user.email,
-                biografia: docSnap.data().biografia,
+                NomeUsuario: docSnap.data().NomeUsuario,
+                Email: value.user.email,
+                Biografia: docSnap.data().Biografia,
                 CPF: docSnap.data().CPF,
                 DataCadastro: docSnap.data().DataCadastro,
                 FotoCapa: docSnap.data().FotoCapa,
                 FotoPerfil: docSnap.data().FotoPerfil,
-                StatusVerificação: docSnap.data().StatusVerificação
+                StatusVerificação: docSnap.data().StatusVerificação,
+                Pessoa: docSnap.data().Pessoa
             }
 
             setUser(data);
@@ -250,26 +254,28 @@ function AuthProvider( {children}){
             let uid = value.user.uid
 
             await setDoc(doc(db, "usersCPF", uid ), {
-                biografia: "",
+                Biografia: null,
                 CPF: cpf,
                 DataCadastro: getData(),
-                FotoCapa: "",
-                FotoPerfil: "",
+                FotoCapa: null,
+                FotoPerfil: null,
                 NomeUsuario: name,
                 StatusVerificação:"Não verificado",
-                Email: email
+                Email: email,
+                Pessoa: "Fisica"
             })
             .then(() => {
                 let data = {
                     uid: uid,
-                    biografia: "",
+                    Biografia: null,
                     CPF: cpf,
                     DataCadastro: getData(),
-                    FotoCapa: "",
-                    FotoPerfil: "",
+                    FotoCapa: null,
+                    FotoPerfil: null,
                     NomeUsuario: name,
                     StatusVerificação:"Não verificado",
-                    Email: value.user.email
+                    Email: value.user.email,
+                    Pessoa: "Fisica"
                 };
                 
                 setUser(data);

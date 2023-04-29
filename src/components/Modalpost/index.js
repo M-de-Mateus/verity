@@ -1,11 +1,11 @@
 import './modalpost.css';
-import userProfile from '../../assets/user-profile-image.png';
+import avatar from '../../assets/avatar.png';
 import { GrFormClose } from 'react-icons/gr';
 import { MdVideoLibrary } from 'react-icons/md';
 import { MdImage } from 'react-icons/md';
 import { FiPaperclip } from 'react-icons/fi';
 
-export default function Modalpost({close}){
+export default function Modalpost({close, user}){
     return(
         <div className='modal-post'>
             <div className='modal-post-container'>
@@ -21,8 +21,8 @@ export default function Modalpost({close}){
                 </div>
                 <hr/>
                 <div className='modal-post-container-user-info'>
-                    <img src={userProfile} alt='user'/>
-                    <span><strong>G1 NOTICIAS</strong></span>
+                    <img src={user.FotoPerfil === null ? avatar : user.FotoPerfil} alt='user'/>
+                    <span><strong>{user.NomeUsuario}</strong></span>
                 </div>
                 <div className='modal-post-area'>
                     <form className='modal-post-area-form'>

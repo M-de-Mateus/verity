@@ -2,26 +2,29 @@ import './home.css';
 import Modal from '../../components/Modalpost';
 import Modalfilters from '../../components/Modalfilters';
 import Header from '../../components/Header';
-import { useState } from 'react';
-import { IoSettingsOutline } from 'react-icons/io5';
+import { useContext, useState } from 'react';
+import { IoSettingsOutline, IoEllipsisHorizontal } from 'react-icons/io5';
+import { MdOutlineModeComment, MdModeComment, MdOutlineShare } from 'react-icons/md';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { GoVerified } from 'react-icons/go';
-import { IoEllipsisHorizontal } from 'react-icons/io5';
 import { TiWarning } from 'react-icons/ti';
 import { AiFillLike} from 'react-icons/ai';
-import { MdModeComment } from 'react-icons/md';
-import { MdOutlineModeComment } from 'react-icons/md';
 import { FiFilter } from 'react-icons/fi';
 import { BiSearchAlt } from 'react-icons/bi';
-import userImage from '../../assets/userImage.png';
+import avatar from '../../assets/avatar.png';
 import noticeImage from '../../assets/imagemNoticia.png';
 import noticeImage2 from '../../assets/imagemNoticia2.png';
 import noticeImage3 from '../../assets/imagemNoticia3.png';
 import userProfileFeed from '../../assets/user-profile-image.png';
 import feedNoticeImage from '../../assets/notice-image-feed.png';
 
+import { AuthContext } from '../../contexts/auth';
+
 
 export default function Home(){
+
+    const { user } = useContext(AuthContext);
+
     const [modalPost, setModalPost] = useState(false);
     const [modalFilter, setModalFilter] = useState(false);
 
@@ -39,10 +42,10 @@ export default function Home(){
             <div className='content'>
                 <div className='user'>
                     <div>
-                        <img src={userImage} alt='Imagem do usuário'/>
+                        <img src={user.FotoPerfil === null ? avatar : user.FotoPerfil} alt='Imagem do usuário'/>
                     </div>
-                    <h4>Caique terra 2 <GoVerified size='15px' color='#8a8282'/></h4>
-                    <h6>@animalWorld</h6>
+                    <h4>{user.NomeUsuario} {user.StatusVerificação === "Não verificado" ? "" :
+                    <GoVerified size='15px' color='#8a8282'/>}</h4>
                     <hr/>
                     <div className='user-options'>
                         <span><FaRegUserCircle size='12px'/> Meu perfil</span>
@@ -103,14 +106,16 @@ export default function Home(){
                             <BiSearchAlt size='1.8em' color='#fff'/>
                         </button>
                     </div>
+                    {user.Pessoa === "Juridica" ? 
                     <div className='post-creator'>
                         <div className='creator-logo-area'>
-                            <img src={ userImage } alt='user'/>
+                            <img src={user.FotoPerfil === null ? avatar : user.FotoPerfil} alt='user'/>
                         </div>
                         <div className='creator-input-area'>
                             <button onClick={openModal}><input type='text' placeholder='O que vamos noticiar hoje?' disabled='True'/></button>
                         </div>
                     </div>
+                       : "" }
                     <div className='feed-posts'>
                         <div className='feed-post-header'>
                             <div className='feed-post-user-profile-info'>
@@ -163,11 +168,15 @@ export default function Home(){
                                 <div><MdModeComment size='1.4em'/></div>
                                 <div>Comentar</div>
                             </button>
+                            <button className='feed-buttons-type'>
+                                <div><MdOutlineShare size='1.4em'/></div>
+                                <div>Compartilhar</div>
+                            </button>
                         </div>
                         <hr color='#E9E9E9'/>
                         <div className='feed-comment-area'>
                             <div className='feed-user-image-comment'>
-                                <img src={userImage} alt='usuario'/>
+                                <img src={avatar} alt='usuario'/>
                             </div>
                             <div className='feed-input-comment-box'>
                                 <input type='text' placeholder='Escreva um comentário...'/>
@@ -218,6 +227,7 @@ export default function Home(){
             {modalPost && (
                 <Modal
                     close={openModal}
+                    user = {user}
                 />
             )}
         </div>

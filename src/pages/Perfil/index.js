@@ -1,38 +1,50 @@
 import './perfil.css';
 import Header from '../../components/Header';
-import cover from '../../assets/cover.png';
-import userImage from '../../assets/userImage.png'
+import { useContext, useState } from 'react';
+import cover from '../../assets/coverDefault.png';
+import avatar from '../../assets/avatar.png'
+import { AiFillLike, AiOutlineFileSearch} from 'react-icons/ai';
+import { MdOutlineModeComment, MdOutlineShare, MdHouse, MdModeComment } from 'react-icons/md';
+import { TiCamera, TiWarning } from 'react-icons/ti';
 import { GoVerified } from 'react-icons/go';
-import { TiCamera } from 'react-icons/ti';
-import { AiFillLike} from 'react-icons/ai';
-import { MdModeComment } from 'react-icons/md';
-import { MdOutlineModeComment } from 'react-icons/md';
-import { TiWarning } from 'react-icons/ti';
 import { IoEllipsisHorizontal } from 'react-icons/io5';
-import { MdHouse } from 'react-icons/md';
 import { FaMapMarkerAlt } from 'react-icons/fa'
+import { FiUpload } from 'react-icons/fi';
 import { ImNewspaper } from 'react-icons/im';
-import { AiOutlineFileSearch } from 'react-icons/ai';
 import userProfileFeed from '../../assets/user-profile-image.png';
 import feedNoticeImage from '../../assets/notice-image-feed.png';
 
+import { AuthContext } from '../../contexts/auth';
+
 export default function Perfil(){
+
+    const { user } = useContext(AuthContext);
+
+    const [ biografia, setBiografia] = useState('Escreva algo sobre você...')
+
     return(
         <div>
             <Header/>
             <div className='content-profile'>
                 <div className='user-profile-cover'>
                     <div className='profile-cover'>
-                        <img src={cover} alt='capa'/>
+                        <img src={user.FotoCapa === null ? cover : user.FotoCapa} alt='capa'/>
                     </div>
                     <div className='profile-info'>
-                        <div className='profile-user-image'>
-                            <img src={userImage} alt='capa'/>
-                        </div>
+                            <div className='profile-image-container'>
+                                <div className='profile-user-image'>
+                                        <img src={user.FotoPerfil === null ? avatar : user.FotoPerfil} alt='capa'/>
+                                </div>
+                                <form className='profile-user-form-image'>
+                                    <label>  
+                                            <input type='file' accept='image/*'/>
+                                    </label>
+                                </form>
+                            </div>
                         <div className='profile-user-name'>
                             <div>
-                                <h3>Caique Terra 2 <GoVerified size='.7em'/></h3>
-                                <h6>@animalWorld</h6>
+                                <h3>{user.NomeUsuario} {user.StatusVerificação === "Não verificado" ? "" : 
+                                <GoVerified size='.7em'/>}</h3>
                             </div>
                         </div>
                     </div>
@@ -52,7 +64,8 @@ export default function Perfil(){
                         <div className='user-information'>
                             <h3>Apresentação</h3>
                             <div className='bio-text'>
-                                <div className='bio'>Ceo da Animal World</div>  
+                                <div className='bio'>{user.Biografia === null ? biografia 
+                                : user.Biografia}</div>  
                             </div>
                             <button className='button-edit'>EDITAR BIO</button>
                             <div className='more-user-information'>
@@ -67,6 +80,7 @@ export default function Perfil(){
                             </div>
                             <button className='button-edit'>EDITAR DETALHES</button>
                         </div>
+                        {user.Pessoa === "Juridica" ? 
                         <div className='user-information'>
                             <h3>Sobre a empresa</h3>
                             <div className='enterprise-rating-range'>
@@ -101,6 +115,8 @@ export default function Perfil(){
                                 </div>
                             </div>
                         </div>
+                        : ""}
+                        {user.Pessoa === "Juridica" ? 
                         <div className='user-information'>
                             <h3>Histórico de Strikes</h3>
                             <br/>
@@ -123,7 +139,9 @@ export default function Perfil(){
                             </div>
                             <hr color='#e9e9e9'/>
                         </div>
+                        : ""}
                     </div>
+                    
                     <div className='user-profile-area-column'>
                         <div className='feed-posts'>
                             <div className='feed-post-header'>
@@ -177,11 +195,15 @@ export default function Perfil(){
                                     <div><MdModeComment size='1.4em'/></div>
                                     <div>Comentar</div>
                                 </button>
+                                <button className='feed-buttons-type'>
+                                    <div><MdOutlineShare size='1.4em'/></div>
+                                <div>Compartilhar</div>
+                            </button>
                             </div>
                             <hr color='#E9E9E9'/>
                             <div className='feed-comment-area'>
                                 <div className='feed-user-image-comment'>
-                                    <img src={userImage} alt='usuario'/>
+                                    <img src={user.FotoPerfil === null ? avatar : user.FotoPerfil} alt='usuario'/>
                                 </div>
                                 <div className='feed-input-comment-box'>
                                     <input type='text' placeholder='Escreva um comentário...'/>
