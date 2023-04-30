@@ -53,6 +53,7 @@
 }
 
 .user div img{
+    border-radius: 50px;
     object-fit: fill;
     width: 80px;
     height: 80px;
@@ -412,6 +413,7 @@
 }
 
 .creator-logo-area img{
+    border-radius: 50px;
     height: 3em;
     width: 3em;
 }

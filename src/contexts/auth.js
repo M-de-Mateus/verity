@@ -112,7 +112,7 @@ function AuthProvider( {children}){
             let uid = value.user.uid
 
             await setDoc(doc(db, "usersCNPJ", uid ), {
-                Biografia: "",
+                Biografia: null,
                 CNPJ: cnpj,
                 DataCadastro: getData(),
                 Rua: rua,
@@ -150,7 +150,6 @@ function AuthProvider( {children}){
                     FotoCapa: null,
                     FotoPerfil: null,
                     NomeFantasia: nomeFantasia,
-                    NomeUsuario: name,
                     Pais: pais,
                     StatusEmpresa:"100",
                     StatusVerificação:"Não verificada",
@@ -333,7 +332,9 @@ function AuthProvider( {children}){
                 singUpCPF,
                 logout,
                 loadingAuth,
-                loading  
+                loading, 
+                storageUser,
+                setUser  
             }}
         >
             {children}

@@ -85,7 +85,7 @@ export default function Home(){
                             </select>
                         </div>
                         <div>
-                            <label>Cidade:</label>
+                            <label>Municipio:</label>
                             <select>
                                 <option className='option'>Todas</option>
                             </select>
@@ -176,7 +176,7 @@ export default function Home(){
                         <hr color='#E9E9E9'/>
                         <div className='feed-comment-area'>
                             <div className='feed-user-image-comment'>
-                                <img src={avatar} alt='usuario'/>
+                                <img src={user.FotoPerfil === null ? avatar : user.FotoPerfil} alt='usuario'/>
                             </div>
                             <div className='feed-input-comment-box'>
                                 <input type='text' placeholder='Escreva um comentário...'/>

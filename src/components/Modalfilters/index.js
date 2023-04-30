@@ -31,7 +31,7 @@ export default function Modalfilters({ close }){
                         </select>
                     </div>
                     <div>
-                        <label>Cidade:</label>
+                        <label>Municipio:</label>
                         <select>
                             <option className='option'>Todas</option>
                         </select>

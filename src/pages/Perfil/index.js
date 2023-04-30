@@ -1,7 +1,9 @@
 import './perfil.css';
 import Header from '../../components/Header';
 import { useContext, useState } from 'react';
-import cover from '../../assets/coverDefault.png';
+import { toast } from "react-toastify";
+import cover from '../../assets/pravda.png';
+import coverpf from '../../assets/coverDefault.png';
 import avatar from '../../assets/avatar.png'
 import { AiFillLike, AiOutlineFileSearch} from 'react-icons/ai';
 import { MdOutlineModeComment, MdOutlineShare, MdHouse, MdModeComment } from 'react-icons/md';
@@ -9,18 +11,120 @@ import { TiCamera, TiWarning } from 'react-icons/ti';
 import { GoVerified } from 'react-icons/go';
 import { IoEllipsisHorizontal } from 'react-icons/io5';
 import { FaMapMarkerAlt } from 'react-icons/fa'
-import { FiUpload } from 'react-icons/fi';
 import { ImNewspaper } from 'react-icons/im';
 import userProfileFeed from '../../assets/user-profile-image.png';
 import feedNoticeImage from '../../assets/notice-image-feed.png';
+import { db, storage } from '../../services/firebaseconnection';
+import { doc, updateDoc } from 'firebase/firestore'; 
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { AuthContext } from '../../contexts/auth';
 
 export default function Perfil(){
 
-    const { user } = useContext(AuthContext);
+    const { user, storageUser, setUser } = useContext(AuthContext);
 
-    const [ biografia, setBiografia] = useState('Escreva algo sobre você...')
+    const [ avatarUrl, setAvatarUrl ] = useState( user && user.FotoPerfil);
+
+    function handleFile(e){
+        if(e.target.files[0] !== null){
+            const image = e.target.files[0];
+
+            if(image.type === 'image/jpeg' || image.type === 'image/png'){
+                setAvatarUrl(URL.createObjectURL(image));
+                handleUpload(image)          
+            }else{
+                toast.warning('Envie uma foto no formato PNG ou JPEG!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: "",
+                    theme: "colored",
+                });
+                return;
+            }
+            
+        }else{
+            toast.warning('Envie uma foto no formato PNG ou JPEG!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: "",
+                theme: "colored",
+            })
+        } 
+    }
+
+    async function handleUpload(image){
+        const currentUid = user.uid;
+
+        const uploadRef = ref(storage, `images/${currentUid}/${image.name}`)
+
+        const uploadTask = uploadBytes(uploadRef, image)
+        .then((snapshot)=>{
+            
+            getDownloadURL(snapshot.ref)
+            .then( async (downloadUrl) =>{
+                let urlFoto = downloadUrl;
+
+                if(user.Pessoa === "Fisica"){
+                    const docRef = doc(db, "usersCPF", user.uid)
+                    await updateDoc(docRef, {
+                        FotoPerfil: urlFoto 
+                    })
+                    .then(()=>{
+                        let data = {
+                            ...user,
+                            FotoPerfil: urlFoto
+                        }
+
+                        setUser(data);
+                        storageUser(data);
+                        toast.success('Foto atualizada com sucesso!', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress:"",
+                            theme: "colored",
+                            });
+                    })
+                }else{
+                    const docRef = doc(db, "usersCNPJ", user.uid)
+                    await updateDoc(docRef, {
+                        FotoPerfil: urlFoto 
+                    })
+                    .then(()=>{
+                        let data = {
+                            ...user,
+                            FotoPerfil: urlFoto
+                        }
+
+                        setUser(data);
+                        storageUser(data);
+                        toast.success('Foto atualizada com sucesso!', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress:"",
+                            theme: "colored",
+                        });
+                    })
+                }
+            })
+        })
+    }
 
     return(
         <div>
@@ -28,16 +132,20 @@ export default function Perfil(){
             <div className='content-profile'>
                 <div className='user-profile-cover'>
                     <div className='profile-cover'>
-                        <img src={user.FotoCapa === null ? cover : user.FotoCapa} alt='capa'/>
+                        {user.Pessoa === "Juridica" ?
+                        (<img src={user.FotoCapa === null ? cover : user.FotoCapa} alt='capa'/>) :
+                        (<img src={user.FotoCapa === null ? coverpf : user.FotoCapa} alt='capa'/>)}
                     </div>
                     <div className='profile-info'>
                             <div className='profile-image-container'>
                                 <div className='profile-user-image'>
-                                        <img src={user.FotoPerfil === null ? avatar : user.FotoPerfil} alt='capa'/>
+                                    {avatarUrl === null ? (<img src={avatar} alt='capa'/>)
+                                    :  (<img src={user.FotoPerfil} alt='capa'/>
+                                    )}               
                                 </div>
                                 <form className='profile-user-form-image'>
                                     <label>  
-                                            <input type='file' accept='image/*'/>
+                                            <input type='file' onChange={handleFile}  accept='image/*'/>
                                     </label>
                                 </form>
                             </div>
@@ -64,7 +172,7 @@ export default function Perfil(){
                         <div className='user-information'>
                             <h3>Apresentação</h3>
                             <div className='bio-text'>
-                                <div className='bio'>{user.Biografia === null ? biografia 
+                                <div className='bio'>{user.Biografia === null ? 'Escreva algo sobre você...'
                                 : user.Biografia}</div>  
                             </div>
                             <button className='button-edit'>EDITAR BIO</button>
