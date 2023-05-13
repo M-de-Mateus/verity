@@ -9,8 +9,8 @@ import { ReactTinyLink } from 'react-tiny-link';
 import defaultMedia from '../../assets/default.jpg';
 import { toast } from "react-toastify";
 import { db, storage } from '../../services/firebaseconnection';
-import { doc, updateDoc } from 'firebase/firestore'; 
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, setDoc, updateDoc, addDoc,collection } from 'firebase/firestore'; 
+import { ref, uploadBytes, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 
 export default function Modalpost({close, user}){
@@ -22,15 +22,21 @@ export default function Modalpost({close, user}){
     const [ text, setText ] = useState('');
     const [ hasLink, setHasLink ] = useState(false);
     const [ fotoUrl, setFotoUrl ] = useState([]);
+    const [ nivel, setNivel ] = useState(null);
+    const [ topico, setTopico ] = useState('Tecnologia');
+    const [ municipio, setMunicipio ] = useState('Acrelândia');
+    const [ anexo, setAnexo ] = useState(['']);
+    const [ fotoLink, setFotoLink ] = useState('');
+    const [ uploadImage, setUploadImage ] = useState(false);
+    const [ uploadArquivos, setUploadArquivos ] = useState(false);
 
-
-    function handleFile(e){
+   function handleFile(e){
         if(e.target.files[0] !== null){
             const image = e.target.files[0];
 
             if(image.type === 'image/jpeg' || image.type === 'image/png'){
-                setFotoUrl(URL.createObjectURL(image));
-                // handleUpload(image)          
+                setFotoUrl(URL.createObjectURL(image)); 
+                handleUpload(image);      
             }else{
                 toast.warning('Envie uma foto no formato PNG ou JPEG!', {
                     position: "top-right",
@@ -57,7 +63,45 @@ export default function Modalpost({close, user}){
                 theme: "colored",
             })
         } 
+
     }
+
+
+    async function handleFileAnexo(e){
+        if(e.target.files[0] !== null){
+            const arquivo = e.target.files;
+
+            if(arquivo){
+                await uploadAnexo(arquivo);
+            }else{
+                toast.warning('Envie um arquivo válido!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: "",
+                    theme: "colored",
+                });
+                return;
+            }
+            
+        }else{
+            toast.warning('Envie um arquivo válido!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: "",
+                theme: "colored",
+            })
+        } 
+    }
+
+
 
     function closeModal(){
         if(fotoUrl){
@@ -75,13 +119,73 @@ export default function Modalpost({close, user}){
         }
     }
 
-    {/*async function handleUpload(image){
+    async function handleUpload(image){
         const currentUid = user.uid;
+
+        setUploadImage(true);
 
         const uploadRef = ref(storage, `imagesPosts/${currentUid}/${image.name}`)
 
-        uploadBytes(uploadRef, image)
-    }*/}
+        await uploadBytes(uploadRef, image)
+        .then((snapshot) => {
+            getDownloadURL(snapshot.ref)
+            .then(async (downloadUrl) => {
+                await setFotoLink(downloadUrl)
+                setUploadImage(false);
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+        })
+
+        
+    }
+
+
+    async function uploadAnexo(anexos){
+        const currentUid = user.uid;
+        
+        setUploadArquivos(true);
+        
+        let urlImages = []
+
+        for (const i of anexos) {
+          const uploadRef = ref(storage, `anexosPosts/${currentUid}/${i.name}`)
+          const uploadTask = uploadBytesResumable(uploadRef, i);
+      
+          // Cria um elemento "progress" para exibir a barra de progresso
+          const progressBar = document.createElement('progress');
+          progressBar.id = `anexo-progress-${i.name}`;
+          progressBar.max = 100;
+          progressBar.value = 0;
+      
+          // Adiciona a barra de progresso à página
+          const progressBarContainer = document.getElementById('progress-bar-container');
+          progressBarContainer.appendChild(progressBar);
+      
+          // Monitora o evento upload_progress para atualizar a barra de progresso
+          uploadTask.on("state_changed", (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            progressBar.value = progress;
+          }, (error) => {
+            console.log(error);
+          }, () => {
+            // Quando o upload é concluído, obtém a URL de download e adiciona à lista
+            getDownloadURL(uploadTask.snapshot.ref)
+            .then(async (downloadUrl) => {
+              await anexo.push(downloadUrl)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+            // Remove a barra de progresso da página
+            progressBar.parentNode.removeChild(progressBar);
+          })
+        }
+      
+        setUploadArquivos(false)
+        
+    }
 
 
     function handleTextChange(e){
@@ -92,7 +196,7 @@ export default function Modalpost({close, user}){
         const outputLinks = links.map((link) => {
           return link
         });
-        setText(outputLinks);
+        setText(e);
         setHasLink(outputLinks.length > 0);
 
       };
@@ -131,6 +235,35 @@ export default function Modalpost({close, user}){
         setSelected(e)
     }
 
+    function handleOptionChange(e){
+        setNivel(e.target.value)
+    }
+
+    function handleChangeSelectTopico(e){
+        setTopico(e.target.value)
+    }
+
+    function handleChangeSelectMunicipio(e){
+        setMunicipio(e.target.value)
+    }
+
+    async function handleSubmit(e){
+        e.preventDefault();
+      
+        await addDoc(collection(db, 'posts'), {      
+          Uid: user.uid,
+          Conteudo: text,
+          Data: new Date(),
+          IdComentarios: null,
+          Topico: topico,
+          Estado: selected,
+          Municipio: municipio,
+          Nivel: nivel, 
+          Anexos: anexo,
+          Imagem: fotoLink
+        });
+      }
+
     return(
         <div className='modal-post'>
             <div className='modal-post-container'>
@@ -151,7 +284,7 @@ export default function Modalpost({close, user}){
                         <span><strong>{user.NomeUsuario}</strong></span>
                     </div>
                     <div className='modal-post-area'>
-                        <form className='modal-post-area-form'>
+                        <form className='modal-post-area-form' onSubmit={handleSubmit}> 
                             <textarea type='text' onChange={(e) => handleTextChange(e.target.value)}
                              placeholder='O que vamos noticiar hoje?'/>
                             <div>
@@ -186,29 +319,37 @@ export default function Modalpost({close, user}){
                                 <span>Nivel da noticia</span>
                                 <ul class="ratio-options">
                                     <li class="option-modal low">
-                                        <input name="levels" type="radio" id="low"/>
+                                        <input name="levels" type="radio" id="low" value="Baixo"
+                                        onChange={handleOptionChange}
+                                        checked={nivel === "Baixo"}/>
                                         <label for="low">Baixo</label>
                                     </li>
 
                                     <li class="option-modal medium">
-                                        <input name="levels" type="radio" id="medium"/>
+                                        <input name="levels" type="radio" id="medium" value="Médio"
+                                        onChange={handleOptionChange}
+                                        checked={nivel === "Médio"}/>
                                         <label for="medium">Médio</label>
                                     </li>
 
                                     <li class="option-modal high">
-                                        <input name="levels" type="radio" id="high"/>
+                                        <input name="levels" type="radio" id="high" value="Alto"
+                                        onChange={handleOptionChange}
+                                        checked={nivel === "Alto"}/>
                                         <label for="high">Alto</label>
                                     </li>
                                 </ul>
                             </div>
                             <div className='modal-post-area-form-anexo'>
                                     <span>Anexe arquivos que comprovem sua noticia</span>
-                                    <button><FiPaperclip color='#0395FF' size={'1.3em'}/></button>
+                                    <span><FiPaperclip color='#0395FF' size={'1.2em'}/></span>
+                                    <input type='file' onChange={handleFileAnexo} multiple="multiple"></input>
+                                    <div id="progress-bar-container"></div>
                             </div>
                             <div className='modal-post-area-form-filters'>
                                 <div>
                                     <label>Tópico: </label>
-                                    <select>
+                                    <select value={topico} onChange={handleChangeSelectTopico}>
                                         <option>Tecnologia</option>
                                         <option>Saúde</option>
                                         <option>Esportes</option>
@@ -236,7 +377,7 @@ export default function Modalpost({close, user}){
                                 </div>
                                 <div>
                                     <label>Municipio: </label>
-                                    <select>
+                                    <select value={municipio} onChange={handleChangeSelectMunicipio}>
                                     {cidades.map((cidades)=> (
                                             <option key={cidades.id} className='option-modal'>{cidades.nome}</option>
                                         ))}
@@ -244,7 +385,27 @@ export default function Modalpost({close, user}){
                                 </div>                    
                             </div>
                             <div className='modal-post-area-form-filters'>
-                                <button className='modal-post-publi'>Publicar</button>
+                                {nivel === null ? 
+                                    (<button type='submit' className='modal-post-publi-disable' disabled> 
+                                    <abbr title='Selecione um nível para sua noticia!'> 
+                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'}
+                                    </abbr>
+                                    </button>) : 
+                                    (((nivel === 'Médio' || nivel === 'Alto') && anexo.length > 0) && uploadArquivos === false && uploadImage === false ?
+                                    (<button type='submit' className='modal-post-publi'> 
+                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'} 
+                                    </button>) :
+                                    (nivel === 'Baixo' && (uploadArquivos === false && uploadImage === false) ?
+                                    <button type='submit' className='modal-post-publi'> 
+                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'} 
+                                    </button>
+                                        :
+                                    <button type='submit' className='modal-post-publi-disable' disabled> 
+                                    <abbr title='Anexe uma prova em sua noticia para publicá-la!'> 
+                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'}
+                                    </abbr>
+                                    </button>))
+                                }                                    
                             </div>
                         </form>
                     </div>

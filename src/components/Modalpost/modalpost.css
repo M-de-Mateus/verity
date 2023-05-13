@@ -217,7 +217,11 @@
 }
 
 .modal-post-area-form-anexo span{
-    margin-right: 10px;
+    margin-right: 2px;
+}
+
+.modal-post-area-form-anexo input{
+    margin-left: 4px;
 }
 
 .modal-post-area-form-filters{
@@ -263,6 +267,18 @@
     width: 100%;
 }
 
+.modal-post-publi-disable{
+    border: none;
+    background-color: #E9E9E9;
+    color: #8a8282;
+    padding: 7px 0;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.5em;
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+}
+
 .modal-dinamic-division{
     overflow-x: auto;
 }
@@ -293,5 +309,9 @@
     align-items: center;
     width: 30px;
     height: 30px;
+}
+
+abbr[title] {
+    text-decoration: none;
 }
 
