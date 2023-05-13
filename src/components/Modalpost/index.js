@@ -1,5 +1,5 @@
 import './modalpost.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect} from 'react';
 import avatar from '../../assets/avatar.png';
 import { GrFormClose } from 'react-icons/gr';
 import { MdImage } from 'react-icons/md';
@@ -9,7 +9,7 @@ import { ReactTinyLink } from 'react-tiny-link';
 import defaultMedia from '../../assets/default.jpg';
 import { toast } from "react-toastify";
 import { db, storage } from '../../services/firebaseconnection';
-import { doc, setDoc, updateDoc, addDoc,collection } from 'firebase/firestore'; 
+import { addDoc, collection } from 'firebase/firestore'; 
 import { ref, uploadBytes, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 
@@ -144,10 +144,8 @@ export default function Modalpost({close, user}){
 
     async function uploadAnexo(anexos){
         const currentUid = user.uid;
-        
+
         setUploadArquivos(true);
-        
-        let urlImages = []
 
         for (const i of anexos) {
           const uploadRef = ref(storage, `anexosPosts/${currentUid}/${i.name}`)
