@@ -21,11 +21,12 @@ export default function Modalpost({close, user}){
     const [ selected, setSelected ] = useState('AC')
     const [ text, setText ] = useState('');
     const [ hasLink, setHasLink ] = useState(false);
+    const [ link, setLink ] = useState([]);
     const [ fotoUrl, setFotoUrl ] = useState([]);
     const [ nivel, setNivel ] = useState(null);
     const [ topico, setTopico ] = useState('Tecnologia');
     const [ municipio, setMunicipio ] = useState('Acrelândia');
-    const [ anexo, setAnexo ] = useState(['']);
+    const [ anexo, setAnexo ] = useState([]);
     const [ fotoLink, setFotoLink ] = useState('');
     const [ uploadImage, setUploadImage ] = useState(false);
     const [ uploadArquivos, setUploadArquivos ] = useState(false);
@@ -68,12 +69,16 @@ export default function Modalpost({close, user}){
 
 
     async function handleFileAnexo(e){
+        setUploadArquivos(true);
         if(e.target.files[0] !== null){
             const arquivo = e.target.files;
+            setUploadArquivos(true);
 
             if(arquivo){
                 await uploadAnexo(arquivo);
+                setUploadArquivos(false);
             }else{
+                setUploadArquivos(false);
                 toast.warning('Envie um arquivo válido!', {
                     position: "top-right",
                     autoClose: 3000,
@@ -88,6 +93,7 @@ export default function Modalpost({close, user}){
             }
             
         }else{
+            setUploadArquivos(false);
             toast.warning('Envie um arquivo válido!', {
                 position: "top-right",
                 autoClose: 3000,
@@ -98,7 +104,9 @@ export default function Modalpost({close, user}){
                 progress: "",
                 theme: "colored",
             })
-        } 
+        }
+
+        setUploadArquivos(false);
     }
 
 
@@ -135,53 +143,52 @@ export default function Modalpost({close, user}){
             })
             .catch((err) => {
                 console.log(err)
+                setUploadImage(false);
             })
         })
-
-        
+    
     }
 
 
     async function uploadAnexo(anexos){
         const currentUid = user.uid;
 
-        setUploadArquivos(true);
-
         for (const i of anexos) {
-          const uploadRef = ref(storage, `anexosPosts/${currentUid}/${i.name}`)
-          const uploadTask = uploadBytesResumable(uploadRef, i);
-      
-          // Cria um elemento "progress" para exibir a barra de progresso
-          const progressBar = document.createElement('progress');
-          progressBar.id = `anexo-progress-${i.name}`;
-          progressBar.max = 100;
-          progressBar.value = 0;
-      
-          // Adiciona a barra de progresso à página
-          const progressBarContainer = document.getElementById('progress-bar-container');
-          progressBarContainer.appendChild(progressBar);
-      
-          // Monitora o evento upload_progress para atualizar a barra de progresso
-          uploadTask.on("state_changed", (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            progressBar.value = progress;
-          }, (error) => {
-            console.log(error);
-          }, () => {
-            // Quando o upload é concluído, obtém a URL de download e adiciona à lista
-            getDownloadURL(uploadTask.snapshot.ref)
-            .then(async (downloadUrl) => {
-              await anexo.push(downloadUrl)
+            const uploadRef = ref(storage, `anexosPosts/${currentUid}/${i.name}`)
+            const uploadTask = uploadBytesResumable(uploadRef, i);
+        
+            // Cria um elemento "progress" para exibir a barra de progresso
+            const progressBar = document.createElement('progress');
+            progressBar.id = `anexo-progress-${i.name}`;
+            progressBar.max = 100;
+            progressBar.value = 0;
+        
+            // Adiciona a barra de progresso à página
+            const progressBarContainer = document.getElementById('progress-bar-container');
+            progressBarContainer.appendChild(progressBar);
+        
+            // Monitora o evento upload_progress para atualizar a barra de progresso
+            uploadTask.on("state_changed", (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                progressBar.value = progress;
+            }, (error) => {
+                console.log(error);
+            }, () => {
+                // Quando o upload é concluído, obtém a URL de download e adiciona à lista
+                getDownloadURL(uploadTask.snapshot.ref)
+                .then(async (downloadUrl) => {
+                await anexo.push(downloadUrl)
+                console.log(anexo)
+                })
+                .catch((err) => {
+                console.log(err)
+                })
+                // Remove a barra de progresso da página
+                progressBar.parentNode.removeChild(progressBar);
             })
-            .catch((err) => {
-              console.log(err)
-            })
-            // Remove a barra de progresso da página
-            progressBar.parentNode.removeChild(progressBar);
-          })
         }
-      
-        setUploadArquivos(false)
+
+        
         
     }
 
@@ -191,8 +198,8 @@ export default function Modalpost({close, user}){
         // Expressão regular para encontrar links
         const links = e.match(regex) || [];
         // Faz o match dos links usando a expressão regular e armazena em um array
-        const outputLinks = links.map((link) => {
-          return link
+        const outputLinks = links.map((url) => {
+          return setLink([...link, url])
         });
         setText(e);
         setHasLink(outputLinks.length > 0);
@@ -258,7 +265,14 @@ export default function Modalpost({close, user}){
           Municipio: municipio,
           Nivel: nivel, 
           Anexos: anexo,
-          Imagem: fotoLink
+          Imagem: fotoLink,
+          Status: "Não verificada"
+        })
+        .then(()=>{
+            closeModal()
+        })
+        .catch((err)=>{
+            console.log(err);
         });
       }
 
@@ -294,7 +308,7 @@ export default function Modalpost({close, user}){
                                 minLine={1}
                                 loadSecureUrl={true}
                                 defaultMedia={defaultMedia}
-                                url={text[0]}
+                                url={link[0]}
                                 userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3 Edge/16.16299"
                                 /> : ""}
 
@@ -386,21 +400,21 @@ export default function Modalpost({close, user}){
                                 {nivel === null ? 
                                     (<button type='submit' className='modal-post-publi-disable' disabled> 
                                     <abbr title='Selecione um nível para sua noticia!'> 
-                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'}
+                                        {uploadArquivos || uploadImage ? 'Carregando...' : 'Publicar'}
                                     </abbr>
                                     </button>) : 
                                     (((nivel === 'Médio' || nivel === 'Alto') && anexo.length > 0) && uploadArquivos === false && uploadImage === false ?
                                     (<button type='submit' className='modal-post-publi'> 
-                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'} 
+                                        {uploadArquivos || uploadImage ? 'Carregando...' : 'Publicar'}
                                     </button>) :
                                     (nivel === 'Baixo' && (uploadArquivos === false && uploadImage === false) ?
                                     <button type='submit' className='modal-post-publi'> 
-                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'} 
+                                        {uploadArquivos || uploadImage ? 'Carregando...' : 'Publicar'}
                                     </button>
                                         :
                                     <button type='submit' className='modal-post-publi-disable' disabled> 
                                     <abbr title='Anexe uma prova em sua noticia para publicá-la!'> 
-                                        {uploadArquivos === false && uploadImage === false ? 'Publicar' : 'Carregando...'}
+                                        {uploadArquivos || uploadImage ? 'Carregando...' : 'Publicar'}
                                     </abbr>
                                     </button>))
                                 }                                    
