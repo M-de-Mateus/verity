@@ -142,13 +142,18 @@
     flex-direction: column;
     flex-wrap: nowrap;
     margin: 0 auto;
-    background-color: var(--color-white);
     margin-top: 15px;
     width: 100%;
     height: fit-content;
     max-width: 500px;
+    gap: 1em;
+}
+
+.container-feed-posts{
+    background-color: var(--color-white);
     border-radius: 10px;
 }
+
 
 .feed-post-header{
     display: flex;
@@ -170,9 +175,10 @@
     flex-direction: row;
 }
 
-.feed-post-user-profile img{
+.feed-post-user-image{
     width: 3em;
     height: 3em;
+    border-radius: 3em;
 }
 
 .feed-post-user-name{
@@ -189,9 +195,14 @@
     justify-content: space-between;
 };
 
+
 #name{
     font-size: .9em;
     font-family: 'Roboto', sans-serif;
+}
+
+#name svg{
+    margin-left: 4px;
 }
 
 #status{
@@ -220,17 +231,19 @@
     text-align: start;
 }
 
+
 .feed-image-notice{
     width: 100%;
     max-height: 300px;
     height: 20em;
     position: relative;
-    margin-bottom: 40px;
+    margin-bottom: 5px;
 }
 
 .feed-image-notice img{
     height: 100%;
     width: 100%;
+    object-fit: fill;
 }
 
 .media-details{
@@ -324,6 +337,7 @@
 .feed-user-image-comment img{
     width: 32px;
     height: 32px;
+    border-radius: 32px;
 }
 
 .feed-input-comment-box{

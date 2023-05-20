@@ -257,6 +257,9 @@ export default function Modalpost({close, user}){
       
         await addDoc(collection(db, 'posts'), {      
           Uid: user.uid,
+          Autor: user.NomeUsuario,
+          StatusAutor: user.StatusVerificação,
+          FotoPerfil: user.FotoPerfil,
           Conteudo: text,
           Data: new Date(),
           IdComentarios: null,
@@ -266,6 +269,7 @@ export default function Modalpost({close, user}){
           Nivel: nivel, 
           Anexos: anexo,
           Imagem: fotoLink,
+          Link: link,
           Status: "Não verificada"
         })
         .then(()=>{
