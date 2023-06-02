@@ -18,14 +18,14 @@ export default function Modalpost({close, user}){
 
     const [ locais, setLocais ] = useState([]);
     const [ cidades, setCidades ] = useState([]);
-    const [ selected, setSelected ] = useState('AC')
+    const [ selected, setSelected ] = useState('--');
     const [ text, setText ] = useState('');
     const [ hasLink, setHasLink ] = useState(false);
     const [ link, setLink ] = useState([]);
     const [ fotoUrl, setFotoUrl ] = useState([]);
     const [ nivel, setNivel ] = useState(null);
-    const [ topico, setTopico ] = useState('Tecnologia');
-    const [ municipio, setMunicipio ] = useState('Acrelândia');
+    const [ topico, setTopico ] = useState('--');
+    const [ municipio, setMunicipio ] = useState('--');
     const [ anexo, setAnexo ] = useState([]);
     const [ fotoLink, setFotoLink ] = useState('');
     const [ uploadImage, setUploadImage ] = useState(false);
@@ -366,6 +366,7 @@ export default function Modalpost({close, user}){
                                 <div>
                                     <label>Tópico: </label>
                                     <select value={topico} onChange={handleChangeSelectTopico}>
+                                        <option className='option-modal'>--</option>
                                         <option>Tecnologia</option>
                                         <option>Saúde</option>
                                         <option>Esportes</option>
@@ -386,6 +387,7 @@ export default function Modalpost({close, user}){
                                 <div>
                                     <label>Estado: </label>
                                     <select onChange={(e)=> handleUF(e.target.value)}>
+                                        <option className='option-modal'>--</option>
                                         {locais.map((locais)=> (
                                             <option key={locais.id} className='option-modal'>{locais.sigla}</option>
                                         ))}
@@ -394,6 +396,7 @@ export default function Modalpost({close, user}){
                                 <div>
                                     <label>Municipio: </label>
                                     <select value={municipio} onChange={handleChangeSelectMunicipio}>
+                                    <option className='option-modal'>--</option>
                                     {cidades.map((cidades)=> (
                                             <option key={cidades.id} className='option-modal'>{cidades.nome}</option>
                                         ))}

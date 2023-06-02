@@ -27,18 +27,16 @@ import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 export default function Perfil(){
 
     const { user, storageUser, setUser } = useContext(AuthContext);
-
     const [ avatarUrl, setAvatarUrl ] = useState( user && user.FotoPerfil);
-
     const [ publis, setPublis ] = useState([]);
-
+    
     const postsRef = collection(db, 'posts');
-    const posts = getDocs(query(postsRef, where( 'Uid', '==', user.uid ), orderBy('Data', 'desc')));
+    const posts = query(postsRef, where( 'Uid', '==', user.uid ), orderBy('Data', 'desc'));
 
     useEffect(()=>{
 
         async function loadPosts(){
-            await posts
+            await getDocs(posts)
             .then((snapshot)=>{
                 updatePosts(snapshot);
             })
@@ -357,7 +355,7 @@ export default function Perfil(){
                                             <img src={item.Imagem} alt='notice' />      
                                         </div>
                                     ) :
-                                    item.Link[0] !== "" ? (
+                                    item.Link[0] > 1 ? (
                                         <div>
                                             <ReactTinyLink
                                                 cardSize="large"

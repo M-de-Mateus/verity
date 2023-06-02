@@ -3,6 +3,7 @@ import Modal from '../../components/Modalpost';
 import Modalfilters from '../../components/Modalfilters';
 import Header from '../../components/Header';
 import AutolinkerWrapper from 'react-autolinker-wrapper';
+import api from '../../services/api';
 import { ReactTinyLink } from 'react-tiny-link'
 import { db } from '../../services/firebaseconnection';
 import { useContext, useState, useEffect } from 'react';
@@ -20,10 +21,8 @@ import noticeImage from '../../assets/imagemNoticia.png';
 import noticeImage2 from '../../assets/imagemNoticia2.png';
 import noticeImage3 from '../../assets/imagemNoticia3.png';
 
-
 import { AuthContext } from '../../contexts/auth';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 
 
 
@@ -35,14 +34,27 @@ export default function Home(){
     const [ modalPost, setModalPost ] = useState(false);
     const [ modalFilter, setModalFilter ] = useState(false);
     const [ publis, setPublis ] = useState([]);
+    const [ order, setOrder ] = useState('desc');
+    const [ topico, setTopico ] = useState(null);
+    const [ estado, setEstado ] = useState(null);
+    const [ municipio, setMunicipio ] = useState(null);
+    const [ status, setStatus ] = useState(null);
+    const [ empresa, setEmpresa ] = useState(null);
+    const [ autorUnico, setAutorUnico ] = useState([]);
+    const [ locais, setLocais ] = useState([]);
+    const [ selected, setSelected ] = useState(null);
+    const [ cidades, setCidades ] = useState([]);
 
     const postsRef = collection(db, 'posts');
-    const posts = getDocs(query(postsRef, orderBy('Data', 'desc')));
+    const posts = query(postsRef, orderBy('Data', 'desc'));
+    const usersRef = collection(db, 'usersCNPJ');
+    const users = query(usersRef);
+
 
     useEffect(()=>{
 
         async function loadPosts(){
-            await posts
+            await getDocs(posts)
             .then((snapshot)=>{
                 updatePosts(snapshot);
             })
@@ -51,13 +63,64 @@ export default function Home(){
             })
         }
 
+        async function loadUsers(){
+            await getDocs(users)
+            .then((snapshot)=>{
+                updateUsers(snapshot);
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+        }
+       
+
         loadPosts();
+        loadUsers();
 
         return () => {
 
         }
 
     },[])
+
+    useEffect(()=>{
+
+        async function getLocal(){
+            await api.get("?orderBy=nome")
+            .then((response)=>{
+                setLocais(response.data)
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+        }
+        
+        getLocal()
+            
+    },[locais])
+
+    useEffect(()=>{
+
+        api.get(`/${selected}/municipios?orderBy=nome`)
+        .then(async (response)=>{
+            setCidades(response.data)
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+        
+            
+    },[selected])
+
+    async function loadPosts(){
+        await getDocs(posts)
+        .then((snapshot)=>{
+            updatePosts(snapshot);
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+    }
 
     async function updatePosts(snapshot){
         const isCollectionEmpty = snapshot.size === 0;
@@ -87,7 +150,23 @@ export default function Home(){
             })
 
             setPublis( publis => [...publis, ...lista])
-            console.log(lista)
+        }
+    }
+
+    async function updateUsers(snapshot){
+        const isCollectionEmpty = snapshot.size === 0;
+
+        if(!isCollectionEmpty){
+            let lista = [];
+
+            snapshot.forEach( doc => {
+                lista.push({
+                    Id: doc.id,
+                    NomeUsuario: doc.data().NomeUsuario
+                })
+            })
+
+            setAutorUnico( users => [...users, ...lista])
         }
     }
 
@@ -98,6 +177,15 @@ export default function Home(){
     function openFilterModal(){
         setModalFilter(!modalFilter)
     }
+
+    function handleUF(e){
+        setEstado(e);
+        setSelected(e);
+        console.log(estado)
+        console.log(selected)
+    }
+
+
 
     return(
         <div>
@@ -131,38 +219,65 @@ export default function Home(){
                         </div>
                         <div>
                             <label>Ordernado por:</label>
-                            <select>
-                                <option className='option'>Mais relevantes</option>
+                            <select onChange={(e) => setOrder(e.target.value)}>
+                                <option className='option' value='desc'>Mais recentes</option>
+                                <option className='option' value='asc'>Menos recentes</option>
                             </select>
                         </div>
                         <div>
                             <label>Tópico:</label>
-                            <select>
-                                <option className='option'>Tecnologia</option>
+                            <select onChange={(e) => setTopico(e.target.value)}>
+                                <option className='option-modal'>--</option>
+                                <option>Tecnologia</option>
+                                <option>Saúde</option>
+                                <option>Esportes</option>
+                                <option>Política</option>
+                                <option>Economia</option>
+                                <option>Entretenimento</option>
+                                <option>Ciência</option>
+                                <option>Educação</option>
+                                <option>Meio Ambiente</option>
+                                <option>Cultura</option>
+                                <option>Crime</option>
+                                <option>Moda</option>
+                                <option>Negócios</option>
+                                <option>Viagem</option>
+                                <option>Outros</option>
                             </select>
                         </div>
                         <div>
                             <label>Estado:</label>
-                            <select>
-                                <option className='option'>Rio de Janeiro</option>
+                            <select onChange={(e) => handleUF(e.target.value)}>
+                            <option className='option-modal'>--</option>
+                            {locais.map((locais, index)=> (
+                                <option key={index} className='option-modal'>{locais.sigla}</option>
+                            ))}
                             </select>
                         </div>
                         <div>
                             <label>Municipio:</label>
-                            <select>
-                                <option className='option'>Todas</option>
+                            <select value={municipio} onChange={(e) => setMunicipio(e.target.value)}>
+                                <option className='option-modal'>--</option>
+                            {cidades.map((cidades, index)=> (
+                                <option key={index} className='option-modal'>{cidades.nome}</option>
+                            ))}
                             </select>
                         </div>
                         <div>
                             <label>Status:</label>
-                            <select>
+                            <select onChange={(e) => setStatus(e.target.value)}>
+                                <option className='option-modal'>--</option>
+                                <option className='option'>Verificadas</option>
                                 <option className='option'>Não verificadas</option>
                             </select>
                         </div>
                         <div>
                             <label>Empresa:</label>
-                            <select>
-                                <option className='option'>G1</option>
+                            <select onChange={(e) => setEmpresa(e.target.value)}>
+                            <option className='option-modal'>--</option>
+                            {autorUnico.map((itens, index)=> (
+                                <option className='option-modal' key={index}>{itens.NomeUsuario}</option>
+                            ))}
                             </select>
                         </div>
                         <button className='icon-filter-button-search'>
@@ -224,7 +339,7 @@ export default function Home(){
                                             <img src={item.Imagem} alt='notice' />      
                                         </div>
                                     ) :
-                                    item.Link[0] !== "" ? (
+                                    item.Link[0] > 1 ? (
                                         <div>
                                             <ReactTinyLink
                                                 cardSize="large"
