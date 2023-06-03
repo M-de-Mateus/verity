@@ -4,6 +4,7 @@ import Modalfilters from '../../components/Modalfilters';
 import Header from '../../components/Header';
 import AutolinkerWrapper from 'react-autolinker-wrapper';
 import api from '../../services/api';
+import { toast } from "react-toastify";
 import { ReactTinyLink } from 'react-tiny-link'
 import { db } from '../../services/firebaseconnection';
 import { useContext, useState, useEffect } from 'react';
@@ -22,7 +23,7 @@ import noticeImage2 from '../../assets/imagemNoticia2.png';
 import noticeImage3 from '../../assets/imagemNoticia3.png';
 
 import { AuthContext } from '../../contexts/auth';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where, and } from 'firebase/firestore';
 
 
 
@@ -112,15 +113,7 @@ export default function Home(){
             
     },[selected])
 
-    async function loadPosts(){
-        await getDocs(posts)
-        .then((snapshot)=>{
-            updatePosts(snapshot);
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-    }
+   
 
     async function updatePosts(snapshot){
         const isCollectionEmpty = snapshot.size === 0;
@@ -150,8 +143,57 @@ export default function Home(){
             })
 
             setPublis( publis => [...publis, ...lista])
+
         }
     }
+
+
+    async function updateNewPosts(snapshot){
+        const isCollectionEmpty = snapshot.size === 0;
+        
+
+        if(!isCollectionEmpty){
+            let lista = [];
+            
+            snapshot.forEach( doc => {
+                lista.push({
+                    Id: doc.id,
+                    Anexo: doc.data().Anexo,
+                    Autor: doc.data().Autor,
+                    FotoPerfil: doc.data().FotoPerfil,
+                    Conteudo: doc.data().Conteudo,
+                    Imagem: doc.data().Imagem,
+                    Data: doc.data().Data.toDate(),
+                    Estado: doc.data().Estado,
+                    IdComentarios: doc.data().IdComentarios,
+                    Municipio: doc.data().Municipio,
+                    Nivel: doc.data().Nivel,
+                    Status: doc.data().Status,
+                    StatusAutor: doc.data().StatusAutor,
+                    Link: doc.data().Link,
+                    Topico: doc.data().Topico,
+                    Uid: doc.data().Uid
+                })
+            })
+
+            setPublis([])
+            setPublis( publis => [...publis, ...lista])
+            console.log(lista)
+
+        }else{
+            toast.warning('Nenhuma noticia encontrada!', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: "",
+                theme: "colored",
+            });
+        }
+    }
+
 
     async function updateUsers(snapshot){
         const isCollectionEmpty = snapshot.size === 0;
@@ -185,6 +227,33 @@ export default function Home(){
         console.log(selected)
     }
 
+    async function handleLoadPosts(e){
+        e.preventDefault();
+
+        let post = query(postsRef, 
+            and( 
+                where( 'Topico', '==', topico ), 
+                where( 'Estado', '==', estado ),
+                where( 'Municipio', '==', municipio ),
+                where( 'Status', '==', status ),
+                where( 'Autor', '==', empresa)
+                ),
+                orderBy('Data', order)
+                )
+            
+
+        await getDocs(post)
+        .then((snapshot)=>{
+            updateNewPosts(snapshot);
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+
+
+
+    };
+
 
 
     return(
@@ -210,80 +279,82 @@ export default function Home(){
                 )}
                 
                 <div className='feed'>
-                    <div className='filter'>
-                        <div className='button-filter'>
-                            <button className='icon-filter-button' onClick={openFilterModal}>
-                                <FiFilter size='1.5em' color='#fff'/>
-                                <span>Clique para abrir os filtros</span>
+                    <form onSubmit={handleLoadPosts}>
+                        <div className='filter'>
+                            <div className='button-filter'>
+                                <button className='icon-filter-button' onClick={openFilterModal}>
+                                    <FiFilter size='1.5em' color='#fff'/>
+                                    <span>Clique para abrir os filtros</span>
+                                </button>
+                            </div>
+                            <div>
+                                <label>Ordernado por:</label>
+                                <select onChange={(e) => setOrder(e.target.value)} value={order}>
+                                    <option className='option' value='desc'>Mais recentes</option>
+                                    <option className='option' value='asc'>Menos recentes</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Tópico:</label>
+                                <select onChange={(e) => setTopico(e.target.value)} value={topico}>
+                                    <option className='option-modal'>--</option>
+                                    <option className='option-modal'>Tecnologia</option>
+                                    <option className='option-modal'>Saúde</option>
+                                    <option className='option-modal'>Esportes</option>
+                                    <option className='option-modal'>Política</option>
+                                    <option className='option-modal'>Economia</option>
+                                    <option className='option-modal'>Entretenimento</option>
+                                    <option className='option-modal'>Ciência</option>
+                                    <option className='option-modal'>Educação</option>
+                                    <option className='option-modal'>Meio Ambiente</option>
+                                    <option className='option-modal'>Cultura</option>
+                                    <option className='option-modal'>Crime</option>
+                                    <option className='option-modal'>Moda</option>
+                                    <option className='option-modal'>Negócios</option>
+                                    <option className='option-modal'>Viagem</option>
+                                    <option className='option-modal'>Outros</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Estado:</label>
+                                <select onChange={(e) => handleUF(e.target.value)} value={estado}>
+                                <option className='option-modal'>--</option>
+                                {locais.map((locais, index)=> (
+                                    <option key={index} className='option-modal'>{locais.sigla}</option>
+                                ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label>Municipio:</label>
+                                <select value={municipio} onChange={(e) => setMunicipio(e.target.value)}>
+                                    <option className='option-modal'>--</option>
+                                {cidades.map((cidades, index)=> (
+                                    <option key={index} className='option-modal'>{cidades.nome}</option>
+                                ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label>Status:</label>
+                                <select onChange={(e) => setStatus(e.target.value)} value={status}>
+                                    <option className='option-modal'>--</option>
+                                    <option className='option-modal'>Verificada</option>
+                                    <option className='option-modal'>Não verificada</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Empresa:</label>
+                                <select onChange={(e) => setEmpresa(e.target.value)} value={empresa}>
+                                <option className='option-modal'>--</option>
+                                {autorUnico.map((itens, index)=> (
+                                    <option className='option-modal' key={index}>{itens.NomeUsuario}</option>
+                                ))}
+                                </select>
+                            </div>
+                            <button type='submit' className='icon-filter-button-search'>
+                                <BiSearchAlt size='1.8em' color='#fff'/>
                             </button>
                         </div>
-                        <div>
-                            <label>Ordernado por:</label>
-                            <select onChange={(e) => setOrder(e.target.value)}>
-                                <option className='option' value='desc'>Mais recentes</option>
-                                <option className='option' value='asc'>Menos recentes</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Tópico:</label>
-                            <select onChange={(e) => setTopico(e.target.value)}>
-                                <option className='option-modal'>--</option>
-                                <option>Tecnologia</option>
-                                <option>Saúde</option>
-                                <option>Esportes</option>
-                                <option>Política</option>
-                                <option>Economia</option>
-                                <option>Entretenimento</option>
-                                <option>Ciência</option>
-                                <option>Educação</option>
-                                <option>Meio Ambiente</option>
-                                <option>Cultura</option>
-                                <option>Crime</option>
-                                <option>Moda</option>
-                                <option>Negócios</option>
-                                <option>Viagem</option>
-                                <option>Outros</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Estado:</label>
-                            <select onChange={(e) => handleUF(e.target.value)}>
-                            <option className='option-modal'>--</option>
-                            {locais.map((locais, index)=> (
-                                <option key={index} className='option-modal'>{locais.sigla}</option>
-                            ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label>Municipio:</label>
-                            <select value={municipio} onChange={(e) => setMunicipio(e.target.value)}>
-                                <option className='option-modal'>--</option>
-                            {cidades.map((cidades, index)=> (
-                                <option key={index} className='option-modal'>{cidades.nome}</option>
-                            ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label>Status:</label>
-                            <select onChange={(e) => setStatus(e.target.value)}>
-                                <option className='option-modal'>--</option>
-                                <option className='option'>Verificadas</option>
-                                <option className='option'>Não verificadas</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Empresa:</label>
-                            <select onChange={(e) => setEmpresa(e.target.value)}>
-                            <option className='option-modal'>--</option>
-                            {autorUnico.map((itens, index)=> (
-                                <option className='option-modal' key={index}>{itens.NomeUsuario}</option>
-                            ))}
-                            </select>
-                        </div>
-                        <button className='icon-filter-button-search'>
-                            <BiSearchAlt size='1.8em' color='#fff'/>
-                        </button>
-                    </div>
+                    </form>
                     {user.Pessoa === "Juridica" ? 
                     <div className='post-creator'>
                         <div className='creator-logo-area'>
@@ -297,7 +368,6 @@ export default function Home(){
                     <div className='feed-posts'>
                         {publis.map((item, index) => {
                             return(
-                                <>
                                 <div className='container-feed-posts' key={index}>
                                 <div className='feed-post-header'>
                                     <div className='feed-post-user-profile-info'>
@@ -339,7 +409,7 @@ export default function Home(){
                                             <img src={item.Imagem} alt='notice' />      
                                         </div>
                                     ) :
-                                    item.Link[0] > 1 ? (
+                                    item.Link[0] > 1? (
                                         <div>
                                             <ReactTinyLink
                                                 cardSize="large"
@@ -390,7 +460,7 @@ export default function Home(){
                                         <input type='text' placeholder='Escreva um comentário...' />
                                     </div>
                                 </div>
-                                </div></>
+                                </div>
                             )
                         })}   
                     </div>
